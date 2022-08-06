@@ -20,16 +20,13 @@ app.get('/', (req, res) => {
 
 io.on('connection', (socket) => {
 
-  console.log('Clients connected:', io.engine.clientsCount);
-  console.log('ID socket connected:', socket.id);
+  socket.emit('welcome', 'Connection established');
 
-  socket.on('disconnect', () => {
-    console.log('El socket ' + socket.id + ' se ha desconectado.');
+  socket.on('server', (data) => {
+    console.log(data);
   })
 
-  socket.conn.once('upgrade', () => {
-    console.log('We have gone from HTTP Long-Polling to', socket.conn.transport.name);
-  })
+  io.emit('everyone', `${socket.id} has connected`);
 })
 
 httpServer.listen(4500);

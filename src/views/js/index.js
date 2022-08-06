@@ -1,27 +1,16 @@
 const socket = io();
 
-const checkSocketStatus = () => {
-  console.log('Socket status:', socket.connected);
-}
+const text = document.querySelector('#text')
 
-socket.on('connect', () => {
-  console.log(`Socket ${socket.id} connected`);
-  checkSocketStatus();
+socket.on('welcome', (data) => {
+  text.textContent = data;
 })
 
-socket.on('connect_error', () => {
-  console.log('Connection could not be established');
+const emitToServer = document.querySelector('#emit-to-server');
+emitToServer.addEventListener('click', () => {
+  socket.emit('server', 'msg to server')
 })
 
-socket.on('disconnect', () => {
-  console.log(`Sockect ${socket.id} disconnected`);
-  checkSocketStatus();
-})
-
-socket.io.on('reconnect_attempt', () => {
-  console.log('Socket is tried reconnected');
-})
-
-socket.io.on('reconnect', () => {
-  console.log('Successful reconnection');
+socket.on('everyone', (data) => {
+  console.log(data);
 })
