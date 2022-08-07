@@ -17,21 +17,11 @@ app.get('/', (req, res) => {
   res.sendFile(__dirname + '/views/index.html');
 })
 
-const teachers = io.of('teachers');
-const students = io.of('students');
-
-teachers.on('connection', (socket) => {
-  console.log(socket.id + ' has been connected to teachers room');
-  socket.on('send-message', ({ message, user }) => {
-    teachers.emit('message', { message, user });
+io.on('connection', (socket) => {
+  socket.on('is-connected', (data) => {
+    console.log(data);
   })
 });
 
-students.on('connection', (socket) => {
-  console.log(socket.id + ' has been connected to students room');
-  socket.on('send-message', ({ message, user }) => {
-    students.emit('message', { message, user });
-  })
-});
 
 httpServer.listen(4500);
