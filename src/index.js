@@ -17,10 +17,21 @@ app.get('/', (req, res) => {
   res.sendFile(__dirname + '/views/index.html');
 })
 
+io.use((socket, next) => {
+  const token = socket.handshake.auth.token;
+  if(token === 'SECRET_KEY') {
+    next();
+  } else {
+    const err = new Error('Unauthorized');
+    err.data = {
+      details: 'Could not be authenticated'
+    }
+    next(err);
+  }
+});
+
 io.on('connection', (socket) => {
-  socket.on('circle-position', (data) => {
-    socket.broadcast.emit('move-circle', data);
-  })
+  console.log(socket.id);
 });
 
 
