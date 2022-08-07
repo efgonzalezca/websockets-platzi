@@ -1,29 +1,32 @@
 const socket = io();
 
-const circle = document.querySelector('#circle');
+const connectRoom1 = document.querySelector('#connectRoom1');
+const connectRoom2 = document.querySelector('#connectRoom2');
+const connectRoom3 = document.querySelector('#connectRoom3');
 
-const drawCircle = ({ top, left }) => {
-  circle.style.top = top;
-  circle.style.left = left;
-}
+connectRoom1.addEventListener('click', () => {
+  socket.emit('connect-to-room', 'room1');
+});
 
-const drag = (e) => {
-  const position = {
-    top: e.clientY + 'px',
-    left: e.clientX + 'px'
-  };
-  drawCircle(position);
-  socket.emit('circle-position', position);
-}
+connectRoom2.addEventListener('click', () => {
+  socket.emit('connect-to-room', 'room2');
+});
 
-document.addEventListener('mousedown', (e) => {
-  document.addEventListener('mousemove', drag)
-})
+connectRoom3.addEventListener('click', () => {
+  socket.emit('connect-to-room', 'room3');
+});
 
-document.addEventListener('mouseup', (e) => {
-  document.removeEventListener('mousemove', drag)
-})
+const sendMessage = document.querySelector('#sendMessage');
 
-socket.on('move-circle', ({ top, left }) => {
-  drawCircle({ top, left });
+sendMessage.addEventListener('click', () => {
+  const message = prompt('Write your message')
+  socket.emit('message', message);
+});
+
+socket.on('send-message', ({ data, room }) => {
+  const li = document.createElement('li');
+  li.textContent = data;
+
+  document.querySelector(`#${room}`).append(li);
+
 })
