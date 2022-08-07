@@ -1,19 +1,30 @@
 const socket = io();
 
-const send = document.querySelector('#send');
-const disconnect = document.querySelector('#disconnect');
-const reconnect = document.querySelector('#reconnect');
+const circle = document.querySelector('#circle');
 
-send.addEventListener('click', () => {
-  if(socket.connected) {
-    socket.emit('is-connected', 'Is connected!');
-  }
+const drawCircle = ({ top, left }) => {
+  circle.style.top = top;
+  circle.style.left = left;
+}
+
+const drag = (e) => {
+  const position = {
+    top: e.clientY + 'px',
+    left: e.clientX + 'px'
+  };
+  drawCircle(position);
+  console.log('Event sends to server');
+  socket.volatile.emit('circle-position', position);
+}
+
+document.addEventListener('mousedown', (e) => {
+  document.addEventListener('mousemove', drag)
 })
 
-disconnect.addEventListener('click', () => {
-  socket.disconnect();
+document.addEventListener('mouseup', (e) => {
+  document.removeEventListener('mousemove', drag)
 })
 
-reconnect.addEventListener('click', () => {
-  socket.connect();
-})
+socket.on('move-circle', ({ top, left }) => {
+  drawCircle({ top, left });
+}) 

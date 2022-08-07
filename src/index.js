@@ -18,8 +18,8 @@ app.get('/', (req, res) => {
 })
 
 io.on('connection', (socket) => {
-  socket.on('is-connected', (data) => {
-    console.log(data);
+  socket.on('circle-position', (data) => {
+    socket.broadcast.emit('move-circle', data);
   })
 });
 
